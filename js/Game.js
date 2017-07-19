@@ -4,7 +4,10 @@ var Game = function(){
     this.background;
     this.player;
     this.house;
+    this.water;
     this.renderer;
+    
+    this.Dust = new Dust(PIXI);
     
     this.init = function(){
         if(!PIXI.utils.isWebGLSupported()){
@@ -31,6 +34,7 @@ var Game = function(){
         PIXI.loader
         .add("img/background.png")
         .add("img/Character.png")
+        .add("img/water.png")
         .load(this.loaded);
     };
     
@@ -46,6 +50,11 @@ var Game = function(){
         this.player = new PIXI.Sprite(
             PIXI.loader.resources["img/Character.png"].texture
         );
+        
+        this.water = new PIXI.Sprite(                     //Sprite function
+            PIXI.loader.resources["img/water.png"].texture
+          );
+        
         this.player.x = 25;
         this.player.y = 25;
         this.player.vx = 0;
@@ -115,6 +124,14 @@ var Game = function(){
                 this.player.vy = 0;
             }
         }.bind(this);
+        /*
+        var w = this.Dust.create(
+          128,                                       //x start position
+          128,                                       //y start position
+          function(){ return this.water}, 
+          this.stage,                                     //Container for particles
+          50                                         //Number of particles
+        );*/
 
         //Start the game loop
         this.run();
@@ -123,23 +140,23 @@ var Game = function(){
     this.run = function(){
         //Loop this function 60 times per second
         requestAnimationFrame(this.run);
-
+        
+        this.Dust.update();
         this.update();
-
         //Render the stage
         this.renderer.render(this.stage);
     }.bind(this);
     
     this.update = function(){
-        if(this.house.grid[Math.floor(this.player.y/50)][Math.floor(this.player.x/50)].walls.top==true && this.player.vy < 0){
+        if( this.house.grid[Math.floor(this.player.y/50)][Math.floor(this.player.x/50)].walls.top==true && this.player.vy < 0){
             
         }else if(this.house.grid[Math.floor(this.player.y/50)][Math.floor(this.player.x/50)].walls.bottom==true && this.player.vy > 0){
             
         }else if(this.house.grid[Math.floor(this.player.y/50)][Math.floor(this.player.x/50)].walls.right==true && this.player.vx > 0){
             
-        }else if(this.house.grid[Math.floor(this.player.y/50)][Math.floor(this.player.x/50)].walls.left==true && this.player.vx < 0){
+        }else if( this.house.grid[Math.floor(this.player.y/50)][Math.floor(this.player.x/50)].walls.left==true && this.player.vx < 0){
             
-        }else {
+        }else{
             this.player.x += this.player.vx*50;
             this.player.y += this.player.vy*50;
         }
